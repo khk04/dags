@@ -1,34 +1,38 @@
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
 from airflow.operators.bash import BashOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 
-# DAG 정의
+# 기본 DAG 설정
 default_args = {
-    'owner': 'your_name',
-    'start_date': datetime(2023, 10, 5),
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
     'retries': 1,
+    'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG(
-    'bash_operator_example_dag',
+# DAG 정의
+with DAG(
+    dag_id='kubernetes_executor_example',
     default_args=default_args,
-    schedule_interval=None,  # DAG를 수동으로 실행하려면 None으로 설정합니다.
-    catchup=False,  # 이전 실행을 실행하지 않도록 설정합니다.
-    description='BashOperator를 사용한 간단한 Airflow DAG 예제',
-)
+    description='Example DAG for KubernetesExecutor',
+    schedule_interval=timedelta(days=1),
+    start_date=datetime(2024, 11, 20),
+    catchup=False,
+    tags=['example', 'kubernetes_executor'],
+) as dag:
 
-# Task 정의
-start_task = DummyOperator(task_id='start_task', dag=dag)
+    # BashOperator 작업 정의
+    task_1 = BashOperator(
+        task_id='print_date',
+        bash_command='date',
+    )
 
-# BashOperator를 사용하여 'echo' 명령어를 실행합니다.
-echo_task = BashOperator(
-    task_id='echo_task',
-    bash_command='echo "Hello, Airflow!"',
-    dag=dag,
-)
+    task_2 = BashOperator(
+        task_id='echo_message',
+        bash_command='echo "Hello from KubernetesExecutor!"',
+    )
 
-end_task = DummyOperator(task_id='end_task', dag=dag)
-
-# Task 간의 의존성 설정
-start_task >> echo_task >> end_task
+    # 작업 순서 정의
+    task_1 >> task_2
