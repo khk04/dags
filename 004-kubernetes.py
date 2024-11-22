@@ -24,6 +24,7 @@ task1 = KubernetesPodOperator(
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     cmds=['echo', 'Hello, Ubuntu from task1!'],
+    get_logs=True,
     dag=dag,
 )
 
@@ -34,6 +35,7 @@ task2 = KubernetesPodOperator(
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     cmds=['echo', 'Hello, Ubuntu from task2!'],
+    get_logs=True,
     dag=dag,
 )
 
