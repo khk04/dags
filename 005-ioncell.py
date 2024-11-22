@@ -45,4 +45,16 @@ task1 = KubernetesPodOperator(
     dag=dag,
 )
 
-task1
+# Task 2: Execute dorado file
+task2 = KubernetesPodOperator(
+    task_id='execute_dorado',
+    name='execute_dorado',
+    namespace='airflow',
+    image='busybox',
+    cmds=["sh", "-c", "/usr/local/airflow/dags/daorado/bin/dorado && sleep 10"],
+    volume_mounts=[pvc_volume_mount],
+    volumes=[pvc_volume],
+    dag=dag,
+)
+
+task1 >> task2
