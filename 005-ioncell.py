@@ -26,7 +26,7 @@ pvc_volume = k8s.V1Volume(
 
 
 pvc_volume_mount = k8s.V1VolumeMount(
-    name='my-pv', mount_path='/data/', sub_path=None, read_only=False
+    name='my-pv', mount_path='/usr/local/airflow/dags/', sub_path=None, read_only=False
 )
 
 
@@ -39,7 +39,7 @@ task1 = KubernetesPodOperator(
     name='list_pv_contents',
     namespace='airflow',
     image='busybox',
-    cmds=["sh", "-c", "ls -l /data/ && sleep 10"],
+    cmds=["sh", "-c", "ls -l /usr/local/airflow/dags && sleep 10"],
     volume_mounts=[pvc_volume_mount],
     volumes=[pvc_volume],
     dag=dag,
