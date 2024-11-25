@@ -13,27 +13,26 @@ default_args = {
 dag = DAG(
     'ncbi_data_download',
     default_args=default_args,
-    schedule_interval=None,  # Set this according to your requirements
+    schedule_interval=None,  # 필요에 따라 이 값을 설정하세요
 )
 
 pvc_name = 'airflow-dags'
 
-
+# PVC 볼륨 정의
 pvc_volume = k8s.V1Volume(
     name='my-pv',
     persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name=pvc_name)
 )
 
-
+# PVC 볼륨 마운트 정의
 pvc_volume_mount = k8s.V1VolumeMount(
     name='my-pv', mount_path='/usr/local/airflow/dags/', sub_path=None, read_only=False
 )
 
-
+# 이미지 풀 시크릿 정의
 image_pull_secrets = [k8s.V1LocalObjectReference("juxtagene-docker-registry")]
 
-
-# Task 1: List contents of the volume
+# 작업 1: 볼륨의 내용 목록을 나열합니다
 task1 = KubernetesPodOperator(
     task_id='list_pv_contents',
     name='list_pv_contents',
@@ -45,7 +44,7 @@ task1 = KubernetesPodOperator(
     dag=dag,
 )
 
-# Task 2: Execute dorado file
+# 작업 2: dorado 파일 실행
 task2 = KubernetesPodOperator(
     task_id='execute_dorado',
     name='execute_dorado',
@@ -57,4 +56,5 @@ task2 = KubernetesPodOperator(
     dag=dag,
 )
 
+# 작업 순서 정의
 task1 >> task2
