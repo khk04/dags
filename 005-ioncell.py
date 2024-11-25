@@ -57,8 +57,7 @@ task2 = KubernetesPodOperator(
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
     image_pull_secrets=image_pull_secrets,
-    # dorado 실행 명령어
-    cmd=["sh", "-c", "dorado && sleep 10"],
+    cmds=["sh", "-c", "dorado && sleep 10"],
     volume_mounts=[pvc_volume_mount],
     volumes=[pvc_volume],
     dag=dag,
