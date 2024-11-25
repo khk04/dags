@@ -31,7 +31,7 @@ pvc_volume_mount = k8s.V1VolumeMount(
 
 # 환경 변수 정의
 env_vars = [
-    k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado')
+    k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado/bin')
 ]
 
 # 이미지 풀 시크릿 정의
