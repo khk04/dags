@@ -26,8 +26,13 @@ pvc_volume = k8s.V1Volume(
 
 # PVC 볼륨 마운트 정의
 pvc_volume_mount = k8s.V1VolumeMount(
-    name='my-pv', mount_path='/usr/local/dorado/bin/', sub_path=None, read_only=False
+    name='my-pv', mount_path='/usr/local/dorado/', sub_path=None, read_only=False
 )
+
+# 환경 변수 정의
+env_vars = [
+    k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado')
+]
 
 # 이미지 풀 시크릿 정의
 image_pull_secrets = [k8s.V1LocalObjectReference("juxtagene-docker-registry")]
@@ -38,7 +43,7 @@ task1 = KubernetesPodOperator(
     name='list_pv_contents',
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
-    cmds=["sh", "-c", "ls -l /usr/local/airflow/dags && sleep 10"],
+    cmds=["sh", "-c", "ls -l /usr/local/dorado && sleep 3"],
     volume_mounts=[pvc_volume_mount],
     volumes=[pvc_volume],
     dag=dag,
@@ -50,7 +55,10 @@ task2 = KubernetesPodOperator(
     name='execute_dorado',
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
-    cmds=["sh", "-c", "/usr/local/dorado/bin/dorado && sleep 60"],
+    env_vars=env_vars,
+    image_pull_secrets=image_pull_secrets,
+    # dorado 실행 명령어
+    cmd=["sh", "-c", "dorado && sleep 10"],
     volume_mounts=[pvc_volume_mount],
     volumes=[pvc_volume],
     dag=dag,
