@@ -40,7 +40,7 @@ pvc_volume_2 = k8s.V1Volume(
 
 # 새로운 PVC 볼륨 마운트 정의
 pvc_volume_mount_2 = k8s.V1VolumeMount(
-    name='my-pv-2', mount_path='/usr/local/colo829/', sub_path=None, read_only=False
+    name='my-pv-2', mount_path='/mnt/colo829/', sub_path=None, read_only=False
 )
 
 # 환경 변수 정의
