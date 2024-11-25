@@ -16,7 +16,7 @@ dag = DAG(
     schedule_interval=None,  # 필요에 따라 이 값을 설정하세요
 )
 
-pvc_name = 'airflow-dags'
+pvc_name = 'dorado-pvc'
 
 # PVC 볼륨 정의
 pvc_volume = k8s.V1Volume(
