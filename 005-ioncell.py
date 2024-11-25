@@ -78,10 +78,10 @@ task2 = KubernetesPodOperator(
     dag=dag,
 )
 
-# 작업 3: dorado 커맨드 실커
+# 작업 3: dorado 커맨드 실행
 task3 = KubernetesPodOperator(
-    task_id='execute_dorado',
-    name='execute_dorado',
+    task_id='execute_dorado_basecaller',
+    name='execute_dorado_basecaller',
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
@@ -93,4 +93,4 @@ task3 = KubernetesPodOperator(
 )
 
 # 작업 순서 정의
-task1 >> task2
+task1 >> task2 >> task3
