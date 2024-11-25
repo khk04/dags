@@ -30,7 +30,7 @@ pvc_volume_mount = k8s.V1VolumeMount(
 )
 
 # 새로운 PVC 이름 정의
-pvc_name_2 = 'colo829-pvc'
+pvc_name_2 = 'col829-pvc'
 
 # 새로운 PVC 볼륨 정의
 pvc_volume_2 = k8s.V1Volume(
