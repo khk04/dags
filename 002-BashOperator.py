@@ -14,7 +14,7 @@ default_args = {
 
 # DAG 정의
 with DAG(
-    dag_id='kubernetes_executor_example',
+    dag_id='002-BashOperator',
     default_args=default_args,
     description='Example DAG for KubernetesExecutor',
     schedule_interval=timedelta(days=1),

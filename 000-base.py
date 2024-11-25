@@ -11,7 +11,7 @@ default_args = {
 }
 
 with DAG(
-    'basic_dag',
+    '001-basic_dag',
     default_args=default_args,
     description='A basic DAG',
     schedule_interval='@daily',

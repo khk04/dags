@@ -11,7 +11,7 @@ default_args = {
 }
 
 dag = DAG(
-    'ncbi_data_download',
+    '005-ioncell',
     default_args=default_args,
     schedule_interval=None,  # 필요에 따라 이 값을 설정하세요
 )

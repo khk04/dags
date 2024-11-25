@@ -12,7 +12,7 @@ default_args = {
 }
 
 dag = DAG(
-    'my_kubernetes_dag',
+    '004-kubernetes',
     default_args=default_args,
     schedule_interval=None,  # 필요에 따라 설정
     catchup=False,  # DAG가 시작 날짜 이후의 모든 기간을 실행하지 않도록 설정
