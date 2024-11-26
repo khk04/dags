@@ -104,10 +104,12 @@ task3 = KubernetesPodOperator(
     cmds=["sh", "-c", "apt update && apt install -y curl && $DORADO_HOME/dorado basecaller --emit-fastq -x 'cpu' hac $COLO829/PAU61426_pass_4ddb6960_908efd09_0.pod5 > $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq "],
     volume_mounts=[pvc_volume_mount, pvc_volume_mount_2, pvc_volume_mount_output],
     volumes=[pvc_volume, pvc_volume_2, pvc_volume_output],
-    resources=k8s.V1ResourceRequirements(
-        requests={"memory": "4Gi", "cpu": "4"},
-        limits={"memory": "8Gi", "cpu": "8"}
-    ),
+    resources={
+        "request_memory": "4Gi",
+        "request_cpu": "4",
+        "limit_memory": "8Gi",
+        "limit_cpu": "8"
+    },
     dag=dag,
 )
 
