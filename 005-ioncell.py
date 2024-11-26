@@ -61,7 +61,9 @@ pvc_volume_mount_output = k8s.V1VolumeMount(
 env_vars = [
     k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado/bin'),
     k8s.V1EnvVar(name='COLO829', value='/mnt/colo829'),
-    k8s.V1EnvVar(name='OUTPUT', value='/mnt/output')
+    k8s.V1EnvVar(name='OUTPUT', value='/mnt/output'),
+    k8s.V1EnvVar(name='MINIMAP2_HOME', value='/usr/local/dorado'),
+    k8s.V1EnvVar(name='SAMTOOLS_HOME', value='/usr/local/dorado')
 ]
 
 # 이미지 풀 시크릿 정의
@@ -107,5 +109,19 @@ task3 = KubernetesPodOperator(
     dag=dag,
 )
 
+# 작업 4: minimap2 명령 실행
+task4 = KubernetesPodOperator(
+    task_id='execute_minimap2',
+    name='execute_minimap2',
+    namespace='airflow',
+    image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
+    env_vars=env_vars,
+    image_pull_secrets=image_pull_secrets,
+    cmds=["sh", "-c", "$MINIMAP2_HOME/minimap2 -ax map-ont ref/chm13v2.0.fa $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq -t 1000 | $SAMTOOLS_HOME/samtools view -Sb - | $SAMTOOLS_HOME/samtools sort > $OUTPUT/minimap2_out.sorted.bam"],
+    volume_mounts=[pvc_volume_mount, pvc_volume_mount_2, pvc_volume_mount_output],
+    volumes=[pvc_volume, pvc_volume_2, pvc_volume_output],
+    dag=dag,
+)
+
 # 작업 순서 정의
-task1 >> task2 >> task3
+task1 >> task2 >> task4
