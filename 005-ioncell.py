@@ -43,10 +43,25 @@ pvc_volume_mount_2 = k8s.V1VolumeMount(
     name='my-pv-2', mount_path='/mnt/colo829/', sub_path=None, read_only=False
 )
 
+# 새로운 PVC 이름 정의
+pvc_name_output = 'output-pvc'
+
+# 새로운 PVC 볼륨 정의
+pvc_volume_output = k8s.V1Volume(
+    name='my-pv-output',
+    persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name=pvc_name_output)
+)
+
+# 새로운 PVC 볼륨 마운트 정의
+pvc_volume_mount_output = k8s.V1VolumeMount(
+    name='my-pv-output', mount_path='/mnt/output/', sub_path=None, read_only=False
+)
+
 # 환경 변수 정의
 env_vars = [
     k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado/bin'),
-    k8s.V1EnvVar(name='COLO829', value='/mnt/colo829')
+    k8s.V1EnvVar(name='COLO829', value='/mnt/colo829'),
+    k8s.V1EnvVar(name='OUTPUT', value='/mnt/output')
 ]
 
 # 이미지 풀 시크릿 정의
@@ -86,9 +101,9 @@ task3 = KubernetesPodOperator(
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
     image_pull_secrets=image_pull_secrets,
-    cmds=["sh", "-c", "$DORADO_HOME/dorado basecaller --emit-fastq -x 'cpu' hac $COLO829/PAU61426_pass_4ddb6960_908efd09_0.pod5 > $COLO829/PAU61426_pass_4ddb6960_908efd09_0.fastq && sleep 3"],
-    volume_mounts=[pvc_volume_mount, pvc_volume_mount_2],
-    volumes=[pvc_volume, pvc_volume_2],
+    cmds=["sh", "-c", "apt update && apt install -y curl && $DORADO_HOME/dorado basecaller --emit-fastq -x 'cpu' hac $COLO829/PAU61426_pass_4ddb6960_908efd09_0.pod5 > $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq "],
+    volume_mounts=[pvc_volume_mount, pvc_volume_mount_2, pvc_volume_mount_output],
+    volumes=[pvc_volume, pvc_volume_2, pvc_volume_output],
     dag=dag,
 )
 
