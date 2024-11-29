@@ -22,9 +22,28 @@ with DAG(
         task_id="task-one",
         get_logs=True,
         resources={
-            'request_memory': '64Mi',
-            'request_cpu': '250m',
-            'limit_memory': '128Mi',
-            'limit_cpu': '500m',
+            'request_memory': '16Gi',
+            'request_cpu': '4000m',
+            'limit_memory': '16Gi',
+            'limit_cpu': '4000m',
         },
     )
+
+    stress_test = KubernetesPodOperator(
+        namespace='default',
+        image="alpine",
+        cmds=["sh", "-c"],
+        arguments=["apk add --no-cache stress-ng && stress-ng --cpu 1 --timeout 60s"],
+        labels={"foo": "bar"},
+        name="stress-test-pod",
+        task_id="task-stress",
+        get_logs=True,
+        resources={
+            'request_memory': '16Gi',
+            'request_cpu': '4000m',
+            'limit_memory': '16Gi',
+            'limit_cpu': '4000m',
+        },
+    )
+
+    k >> stress_test
