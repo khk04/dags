@@ -28,8 +28,8 @@ with DAG(
                 'cpu': '7'
             },
         },
-        cmds=[
-            "bash", "-c", 
+        cmds=["bash", "-c"],
+        arguments=[
             "apt update && apt install -y stress && "
             "stress --cpu 5 --timeout 300 && "
             "echo 'Hello, Airflow!'"
