@@ -16,7 +16,7 @@ with DAG(
     task = KubernetesPodOperator(
         task_id='example_task',
         name='example_pod',
-        namespace='default',
+        namespace='airflow',
         image='ubuntu:20.04',
         container_resources={
             'requests': {
