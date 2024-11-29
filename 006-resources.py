@@ -29,5 +29,9 @@ with DAG(
             },
         },
         cmds=["bash", "-c"],
-        arguments=["echo 'Hello, Airflow!'"],
+        arguments=[
+            "apt-get update && apt-get install -y stress && "
+            "stress --cpu 2 --timeout 60 && "
+            "echo 'Hello, Airflow!'"
+        ],
     )
