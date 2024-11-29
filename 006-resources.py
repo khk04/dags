@@ -30,7 +30,8 @@ with DAG(
         },
         cmds=[
             "bash", "-c", 
-            "apt-get update && apt-get install -y stress && "
+            "apt update && apt install -y stress && "
+            "sleep 30 &&"
             "stress --cpu 5 --timeout 300 && "
             "echo 'Hello, Airflow!'"
         ],
