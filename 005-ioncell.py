@@ -26,7 +26,7 @@ pvc_volume = k8s.V1Volume(
 
 # PVC 볼륨 마운트 정의
 pvc_volume_mount = k8s.V1VolumeMount(
-    name='my-pv', mount_path='/usr/local/tools/', sub_path=None, read_only=False
+    name='my-pv', mount_path='/usr/local/sbin/biotools/', sub_path=None, read_only=False
 )
 
 # 새로운 PVC 이름 정의
