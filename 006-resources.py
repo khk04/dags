@@ -35,3 +35,5 @@ with DAG(
             "echo 'Hello, Airflow!'"
         ],
     )
+
+task
