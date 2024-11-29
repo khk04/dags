@@ -21,17 +21,17 @@ with DAG(
         container_resources={
             'requests': {
                 'memory': '4Gi',
-                'cpu': '2'
+                'cpu': '5'
             },
             'limits': {
                 'memory': '8Gi',
-                'cpu': '4'
+                'cpu': '7'
             },
         },
         cmds=["bash", "-c"],
         arguments=[
             "apt-get update && apt-get install -y stress && "
-            "stress --cpu 2 --timeout 60 && "
+            "stress --cpu 5 --timeout 60 && "
             "echo 'Hello, Airflow!'"
         ],
     )
