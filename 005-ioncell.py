@@ -61,9 +61,7 @@ pvc_volume_mount_output = k8s.V1VolumeMount(
 env_vars = [
     k8s.V1EnvVar(name='BIOTOOLS_HOME', value='/usr/local/sbin/biotools'),
     k8s.V1EnvVar(name='COLO829', value='/mnt/colo829'),
-    k8s.V1EnvVar(name='OUTPUT', value='/mnt/output'),
-    k8s.V1EnvVar(name='MINIMAP2_HOME', value='/usr/local/dorado'),
-    k8s.V1EnvVar(name='SAMTOOLS_HOME', value='/usr/local/dorado')
+    k8s.V1EnvVar(name='OUTPUT', value='/mnt/output')
 ]
 
 # 이미지 풀 시크릿 정의
@@ -75,9 +73,10 @@ task1 = KubernetesPodOperator(
     name='list_pv_contents',
     namespace='airflow',
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
-    cmds=["sh", "-c", "ls -l /usr/local/dorado && sleep 3"],
+    cmds=["sh", "-c", "ls -l $BIOTOOLS_HOME && sleep 3"],
     volume_mounts=[pvc_volume_mount],
     volumes=[pvc_volume],
+    env_vars=env_vars,
     dag=dag,
 )
 
@@ -117,7 +116,7 @@ task4 = KubernetesPodOperator(
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
     image_pull_secrets=image_pull_secrets,
-    cmds=["sh", "-c", "$MINIMAP2_HOME/minimap2 -ax map-ont $COLO829/chm13v2.0.fa $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq -t 1000 | $SAMTOOLS_HOME/samtools view -Sb - | $SAMTOOLS_HOME/samtools sort > $OUTPUT/minimap2_out.sorted.bam"],
+    cmds=["sh", "-c", "$BIOTOOLS_HOME/minimap2 -ax map-ont $COLO829/chm13v2.0.fa $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq -t 1000 | $BIOTOOLS_HOME/samtools view -Sb - | $BIOTOOLS_HOME/samtools sort > $OUTPUT/minimap2_out.sorted.bam"],
     volume_mounts=[pvc_volume_mount, pvc_volume_mount_2, pvc_volume_mount_output],
     volumes=[pvc_volume, pvc_volume_2, pvc_volume_output],
     dag=dag,
