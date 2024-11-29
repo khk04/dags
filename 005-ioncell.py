@@ -16,7 +16,7 @@ dag = DAG(
     schedule_interval=None,  # 필요에 따라 이 값을 설정하세요
 )
 
-pvc_name = 'dorado-pvc'
+pvc_name = 'biotools-pvc'
 
 # PVC 볼륨 정의
 pvc_volume = k8s.V1Volume(
@@ -26,7 +26,7 @@ pvc_volume = k8s.V1Volume(
 
 # PVC 볼륨 마운트 정의
 pvc_volume_mount = k8s.V1VolumeMount(
-    name='my-pv', mount_path='/usr/local/dorado/', sub_path=None, read_only=False
+    name='my-pv', mount_path='/usr/local/tools/', sub_path=None, read_only=False
 )
 
 # 새로운 PVC 이름 정의
@@ -59,7 +59,7 @@ pvc_volume_mount_output = k8s.V1VolumeMount(
 
 # 환경 변수 정의
 env_vars = [
-    k8s.V1EnvVar(name='DORADO_HOME', value='/usr/local/dorado/bin'),
+    k8s.V1EnvVar(name='BIOTOOLS_HOME', value='/usr/local/sbin/biotools'),
     k8s.V1EnvVar(name='COLO829', value='/mnt/colo829'),
     k8s.V1EnvVar(name='OUTPUT', value='/mnt/output'),
     k8s.V1EnvVar(name='MINIMAP2_HOME', value='/usr/local/dorado'),
@@ -89,7 +89,7 @@ task2 = KubernetesPodOperator(
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
     image_pull_secrets=image_pull_secrets,
-    cmds=["sh", "-c", "ls -l $COLO829 && $DORADO_HOME/dorado && sleep 3"],
+    cmds=["sh", "-c", "ls -l $COLO829 && $BIOTOOLS_HOME/dorado && sleep 3"],
     volume_mounts=[pvc_volume_mount, pvc_volume_mount_2],
     volumes=[pvc_volume, pvc_volume_2],
     dag=dag,
@@ -103,7 +103,7 @@ task3 = KubernetesPodOperator(
     image='ubuntu:20.04',  # Ubuntu 20.04 이미지를 사용합니다.
     env_vars=env_vars,
     image_pull_secrets=image_pull_secrets,
-    cmds=["sh", "-c", "apt update && apt install -y curl && $DORADO_HOME/dorado basecaller --emit-fastq -x 'cpu' hac $COLO829/PAU61426_pass_4ddb6960_908efd09_0.pod5 > $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq "],
+    cmds=["sh", "-c", "apt update && apt install -y curl && $BIOTOOLS_HOME/dorado basecaller --emit-fastq -x 'cpu' hac $COLO829/PAU61426_pass_4ddb6960_908efd09_0.pod5 > $OUTPUT/PAU61426_pass_4ddb6960_908efd09_0.fastq "],
     volume_mounts=[pvc_volume_mount, pvc_volume_mount_2, pvc_volume_mount_output],
     volumes=[pvc_volume, pvc_volume_2, pvc_volume_output],
     dag=dag,
