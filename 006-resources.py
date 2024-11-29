@@ -7,51 +7,27 @@ default_args = {
 }
 
 with DAG(
-    '006-pod-resources-example',
+    'example_kubernetes_resources',
     default_args=default_args,
     schedule_interval=None,
+    catchup=False,
 ) as dag:
 
-    k = KubernetesPodOperator(
+    task = KubernetesPodOperator(
+        task_id='example_task',
+        name='example_pod',
         namespace='default',
-        image="ubuntu:16.04",
-        cmds=["bash", "-cx"],
-        arguments=["echo", "10"],
-        labels={"foo": "bar"},
-        name="airflow-test-pod",
-        task_id="task-one",
-        get_logs=True,
-        resources={
+        image='ubuntu:20.04',
+        container_resources={
             'requests': {
-                'memory': '16Gi',
-                'cpu': '4000m'
+                'memory': '4Gi',
+                'cpu': '2'
             },
             'limits': {
-                'memory': '16Gi',
-                'cpu': '4000m'
-            }
-        },
-    )
-
-    stress_test = KubernetesPodOperator(
-        namespace='default',
-        image="alpine",
-        cmds=["sh", "-c"],
-        arguments=["apk add --no-cache stress-ng && stress-ng --cpu 4 --timeout 60s"],
-        labels={"foo": "bar"},
-        name="stress-test-pod",
-        task_id="task-stress",
-        get_logs=True,
-        resources={
-            'requests': {
-                'memory': '16Gi',
-                'cpu': '4000m'
+                'memory': '8Gi',
+                'cpu': '4'
             },
-            'limits': {
-                'memory': '16Gi',
-                'cpu': '4000m'
-            }
         },
+        cmds=["bash", "-c"],
+        arguments=["echo 'Hello, Airflow!'"],
     )
-
-    k >> stress_test
