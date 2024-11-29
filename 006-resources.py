@@ -22,10 +22,14 @@ with DAG(
         task_id="task-one",
         get_logs=True,
         resources={
-            'request_memory': '16Gi',
-            'request_cpu': '4000m',
-            'limit_memory': '16Gi',
-            'limit_cpu': '4000m',
+            'requests': {
+                'memory': '16Gi',
+                'cpu': '4000m'
+            },
+            'limits': {
+                'memory': '16Gi',
+                'cpu': '4000m'
+            }
         },
     )
 
@@ -33,16 +37,20 @@ with DAG(
         namespace='default',
         image="alpine",
         cmds=["sh", "-c"],
-        arguments=["apk add --no-cache stress-ng && stress-ng --cpu 1 --timeout 60s"],
+        arguments=["apk add --no-cache stress-ng && stress-ng --cpu 4 --timeout 60s"],
         labels={"foo": "bar"},
         name="stress-test-pod",
         task_id="task-stress",
         get_logs=True,
         resources={
-            'request_memory': '16Gi',
-            'request_cpu': '4000m',
-            'limit_memory': '16Gi',
-            'limit_cpu': '4000m',
+            'requests': {
+                'memory': '16Gi',
+                'cpu': '4000m'
+            },
+            'limits': {
+                'memory': '16Gi',
+                'cpu': '4000m'
+            }
         },
     )
 
